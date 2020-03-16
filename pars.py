@@ -1,6 +1,14 @@
 from selenium import webdriver
+from bs4 import BeautifulSoup
 
-driver = webdriver.PhantomJS()
-driver.get("http://ig.pro100basket.ru/games/?region=40120&compId=42127")
-main_page = driver.page_source
-print(main_page)
+def print_score(url):
+    driver = webdriver.PhantomJS()
+    driver.get(url)
+    main_page = driver.page_source
+    soup = BeautifulSoup(main_page, 'lxml')
+    scoreA = soup.find("div", { "class" : "ig__stat-scoreA" }).text
+    scoreB = soup.find("div", {"class": "ig__stat-scoreB"}).text
+    names = soup.findAll("div", { "class" : "ig__stat-team-name" })
+    nameA=names[0].text
+    nameB = names[1].text
+    return " {} {}:{} {}".format(nameA,scoreA,scoreB,nameB)
